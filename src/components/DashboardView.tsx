@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Motorcycle, ServiceRecord, ActiveTab } from '../types';
 import { 
   Bike, 
@@ -6,14 +6,9 @@ import {
   Coins, 
   TrendingUp, 
   Plus, 
-  ChevronRight,
-  Github,
-  ExternalLink,
-  Copy,
-  Check,
-  Globe
+  ChevronRight
 } from 'lucide-react';
-import { formatUGX, getStoredGitHubLiveUrl } from '../utils/storage';
+import { formatUGX } from '../utils/storage';
 
 interface DashboardViewProps {
   motorcycles: Motorcycle[];
@@ -23,7 +18,6 @@ interface DashboardViewProps {
   onSelectMotorcycle: (motorcycle: Motorcycle) => void;
   onNavigateTab: (tab: ActiveTab) => void;
   onEditService?: (service: ServiceRecord) => void;
-  onOpenGitHubLive?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -33,17 +27,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onOpenAddService,
   onSelectMotorcycle,
   onNavigateTab,
-  onOpenGitHubLive,
 }) => {
-  const [copiedLink, setCopiedLink] = useState(false);
-  const liveUrl = getStoredGitHubLiveUrl();
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(liveUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
   // Total expenditure calculation
   const totalExpenditure = services.reduce((sum, s) => sum + s.cost, 0);
   const averageCost = services.length > 0 ? Math.round(totalExpenditure / services.length) : 0;
@@ -77,66 +61,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Bike className="w-4 h-4 text-orange-400" />
               <span>Add Motorcycle</span>
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* GitHub Live Link Card */}
-      <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 sm:p-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-          <div className="flex items-start sm:items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-white flex items-center justify-center shrink-0">
-              <Github className="w-5 h-5 text-white" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">GitHub Live Link</span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Live &amp; Online
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5 font-mono truncate max-w-xs sm:max-w-md md:max-w-lg">
-                {liveUrl}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-0">
-            <a
-              href={liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3.5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition active:scale-95"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>Open Live Link</span>
-            </a>
-            <button
-              onClick={handleCopyLink}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active:scale-95"
-            >
-              {copiedLink ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-            {onOpenGitHubLive && (
-              <button
-                onClick={onOpenGitHubLive}
-                className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl transition"
-                title="Configure GitHub Live Link"
-              >
-                <Globe className="w-4 h-4" />
-              </button>
-            )}
           </div>
         </div>
       </div>

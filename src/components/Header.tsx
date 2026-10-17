@@ -5,7 +5,9 @@ import {
   LayoutDashboard, 
   Download, 
   Plus,
-  Github
+  Share,
+  PlusSquare,
+  X
 } from 'lucide-react';
 import { ActiveTab } from '../types';
 import { usePWAInstall } from '../hooks/usePWAInstall';
@@ -15,16 +17,14 @@ interface HeaderProps {
   onSelectTab: (tab: ActiveTab) => void;
   onOpenAddService: () => void;
   onOpenAddMotorcycle?: () => void;
-  onOpenGitHubLive?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onSelectTab,
   onOpenAddService,
-  onOpenGitHubLive,
 }) => {
-  const { isInstallable, isInstalled, install } = usePWAInstall();
+  const { isInstallable, isInstalled, install, showIOSModal, closeIOSModal } = usePWAInstall();
 
   const handleInstallClick = async () => {
     if (isInstallable) {
@@ -99,19 +99,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* GitHub Live Link Button */}
-          {onOpenGitHubLive && (
-            <button
-              onClick={onOpenGitHubLive}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95"
-              title="View GitHub Live Link"
-            >
-              <Github className="w-3.5 h-3.5 text-white" />
-              <span className="hidden sm:inline">GitHub Live</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            </button>
-          )}
-
           {/* Install Button: Only visible before install; disappears completely once installed on phone */}
           {!isInstalled && isInstallable && (
             <button
@@ -135,6 +122,62 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
       </div>
+
+      {/* iOS Installation Instructions Modal (Plain solid colors) */}
+      {showIOSModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-orange-600 text-white flex items-center justify-center">
+                  <Download className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-base text-white">Install on iPhone / iPad</h3>
+              </div>
+              <button
+                onClick={closeIOSModal}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              To install this app on your phone home screen from Safari:
+            </p>
+
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-800 border border-slate-700">
+                <div className="w-6 h-6 rounded-md bg-slate-700 text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Share className="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <span className="font-semibold text-white">Step 1:</span>
+                  <p className="text-slate-300">Tap the <strong className="text-white">Share</strong> button at the bottom of Safari.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-800 border border-slate-700">
+                <div className="w-6 h-6 rounded-md bg-slate-700 text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <PlusSquare className="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <span className="font-semibold text-white">Step 2:</span>
+                  <p className="text-slate-300">Scroll down and tap <strong className="text-white">Add to Home Screen</strong>.</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={closeIOSModal}
+              className="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs rounded-xl shadow-sm transition active:scale-95"
+            >
+              OK, Got It
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

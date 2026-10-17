@@ -9,6 +9,9 @@ const INSTALLED_STORAGE_KEY = 'moto_log_pwa_installed';
 
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isIOS, setIsIOS] = useState<boolean>(false);
+  const [showIOSModal, setShowIOSModal] = useState<boolean>(false);
+  
   const [isInstalled, setIsInstalled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const isStandalone =
@@ -21,6 +24,13 @@ export function usePWAInstall() {
   const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Detect iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIosDevice = /iphone|ipad|ipod/.test(userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream;
+    setIsIOS(isIosDevice);
+
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     const updateInstalledState = () => {
       const isStandalone =
@@ -48,6 +58,7 @@ export function usePWAInstall() {
       setIsInstalled(true);
       setDeferredPrompt(null);
       setCanInstall(false);
+      setShowIOSModal(false);
       localStorage.setItem(INSTALLED_STORAGE_KEY, 'true');
     };
 
@@ -62,27 +73,41 @@ export function usePWAInstall() {
   }, [isInstalled]);
 
   const install = async (): Promise<boolean> => {
-    if (!deferredPrompt) return false;
-    try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setIsInstalled(true);
-        setDeferredPrompt(null);
-        setCanInstall(false);
-        localStorage.setItem(INSTALLED_STORAGE_KEY, 'true');
-        return true;
+    if (deferredPrompt) {
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          setIsInstalled(true);
+          setDeferredPrompt(null);
+          setCanInstall(false);
+          localStorage.setItem(INSTALLED_STORAGE_KEY, 'true');
+          return true;
+        }
+      } catch (err) {
+        console.warn('Install prompt error:', err);
       }
-    } catch (err) {
-      console.warn('Install prompt error:', err);
+      return false;
     }
+
+    // On iOS Safari, show step-by-step native instruction modal
+    if (isIOS && !isInstalled) {
+      setShowIOSModal(true);
+      return true;
+    }
+
     return false;
   };
 
+  const closeIOSModal = () => setShowIOSModal(false);
+
   return {
-    isInstallable: canInstall && !isInstalled,
+    isInstallable: (!isInstalled) && (canInstall || isIOS),
     isInstalled,
     install,
+    isIOS,
+    showIOSModal,
+    closeIOSModal,
   };
 }
 

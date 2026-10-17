@@ -15,7 +15,6 @@ import { AddEditMotorcycleModal } from './components/AddEditMotorcycleModal';
 import { AddEditServiceModal } from './components/AddEditServiceModal';
 import { MotorcycleDetailModal } from './components/MotorcycleDetailModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
-import { GitHubLiveModal } from './components/GitHubLiveModal';
 
 export default function App() {
   const [motorcycles, setMotorcycles] = useState<Motorcycle[]>(() => getStoredMotorcycles());
@@ -31,7 +30,6 @@ export default function App() {
   const [preselectedMotorcycleId, setPreselectedMotorcycleId] = useState<string | undefined>(undefined);
 
   const [selectedMotorcycleForDetail, setSelectedMotorcycleForDetail] = useState<Motorcycle | null>(null);
-  const [isGitHubLiveModalOpen, setIsGitHubLiveModalOpen] = useState(false);
 
   // Delete confirmation modal state
   const [deleteDialog, setDeleteDialog] = useState<{
@@ -163,7 +161,6 @@ export default function App() {
             setPreselectedMotorcycleId(undefined);
             setIsServiceModalOpen(true);
           }}
-          onOpenGitHubLive={() => setIsGitHubLiveModalOpen(true)}
         />
       </div>
 
@@ -188,7 +185,6 @@ export default function App() {
               setServiceToEdit(service);
               setIsServiceModalOpen(true);
             }}
-            onOpenGitHubLive={() => setIsGitHubLiveModalOpen(true)}
           />
         )}
 
@@ -293,12 +289,6 @@ export default function App() {
         impactWarning={deleteDialog.impactWarning}
         onConfirm={deleteDialog.onConfirm}
         onCancel={() => setDeleteDialog((prev) => ({ ...prev, isOpen: false }))}
-      />
-
-      {/* 5. GitHub Live Link Modal */}
-      <GitHubLiveModal
-        isOpen={isGitHubLiveModalOpen}
-        onClose={() => setIsGitHubLiveModalOpen(false)}
       />
     </div>
   );
