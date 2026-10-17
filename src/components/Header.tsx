@@ -4,7 +4,8 @@ import {
   Coins, 
   LayoutDashboard, 
   Download, 
-  Plus
+  Plus,
+  Github
 } from 'lucide-react';
 import { ActiveTab } from '../types';
 import { usePWAInstall } from '../hooks/usePWAInstall';
@@ -14,12 +15,14 @@ interface HeaderProps {
   onSelectTab: (tab: ActiveTab) => void;
   onOpenAddService: () => void;
   onOpenAddMotorcycle?: () => void;
+  onOpenGitHubLive?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onSelectTab,
   onOpenAddService,
+  onOpenGitHubLive,
 }) => {
   const { isInstallable, isInstalled, install } = usePWAInstall();
 
@@ -96,6 +99,19 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+          {/* GitHub Live Link Button */}
+          {onOpenGitHubLive && (
+            <button
+              onClick={onOpenGitHubLive}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95"
+              title="View GitHub Live Link"
+            >
+              <Github className="w-3.5 h-3.5 text-white" />
+              <span className="hidden sm:inline">GitHub Live</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            </button>
+          )}
+
           {/* Install Button: Only visible before install; disappears completely once installed on phone */}
           {!isInstalled && isInstallable && (
             <button

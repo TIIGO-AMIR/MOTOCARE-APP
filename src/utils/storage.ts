@@ -136,3 +136,27 @@ export function detectCategory(workDone: string): ServiceCategory {
   if (lower.includes('wash') || lower.includes('inspection') || lower.includes('service')) return 'general';
   return 'other';
 }
+
+export const STORAGE_KEY_GITHUB_URL = 'moto_log_github_url';
+
+export function getStoredGitHubLiveUrl(): string {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_GITHUB_URL);
+    if (saved && saved.trim()) return saved.trim();
+    if (typeof window !== 'undefined' && window.location.href) {
+      return window.location.href;
+    }
+    return '';
+  } catch (e) {
+    return typeof window !== 'undefined' ? window.location.href : '';
+  }
+}
+
+export function saveStoredGitHubLiveUrl(url: string): void {
+  try {
+    localStorage.setItem(STORAGE_KEY_GITHUB_URL, url.trim());
+  } catch (e) {
+    console.error('Error saving github url to storage:', e);
+  }
+}
+
