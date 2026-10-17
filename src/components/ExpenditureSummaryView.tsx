@@ -115,16 +115,6 @@ export const ExpenditureSummaryView: React.FC<ExpenditureSummaryViewProps> = ({
             Sum of all {services.length} recorded service entries across {motorcycles.length} motorcycles
           </p>
         </div>
-
-        <div className="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-800 print:border-gray-200">
-          <span className="text-xs text-slate-400 font-medium print:text-gray-600">Calculation Rule:</span>
-          <p className="text-xs text-slate-300 font-mono mt-0.5 print:text-black">
-            Total = ∑(Service Costs)
-          </p>
-          <p className="text-[11px] text-emerald-400 font-medium mt-0.5 print:text-emerald-700">
-            ✓ Auto-updates instantly on record change
-          </p>
-        </div>
       </div>
 
       {/* Breakdown Grids */}

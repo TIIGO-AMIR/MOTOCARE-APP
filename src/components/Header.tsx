@@ -150,7 +150,7 @@ export const MobileBottomNav: React.FC<{
           }`}
         >
           <Bike className="w-4 h-4" />
-          <span>Motorcycles</span>
+          <span>Bikes</span>
         </button>
 
         <button
@@ -160,7 +160,7 @@ export const MobileBottomNav: React.FC<{
           }`}
         >
           <Coins className="w-4 h-4" />
-          <span>Expenditure</span>
+          <span>Expenses</span>
         </button>
       </div>
     </nav>
